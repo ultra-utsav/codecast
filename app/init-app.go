@@ -3,8 +3,8 @@ package app
 import (
 	"log"
 
-	"github.com/codecast/config"
-	"github.com/codecast/driver"
+	"github.com/codepod/config"
+	"github.com/codepod/driver"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 

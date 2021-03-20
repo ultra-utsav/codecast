@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/codecast/config"
+	"github.com/codepod/config"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

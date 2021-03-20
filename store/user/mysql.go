@@ -34,7 +34,6 @@ func (u *User) Create(user *entities.User) error {
 
 	_, er = u.col.InsertOne(context.TODO(), user)
 	if er != nil {
-
 		return &error2.CodeError{
 			Code:     http.StatusInternalServerError,
 			Err:      error2.ErrMongoOperation,

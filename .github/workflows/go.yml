@@ -16,8 +16,6 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.15
-      - name: Set up golint
-        run: sudo apt install golint
 
   build:
     runs-on: ubuntu-latest

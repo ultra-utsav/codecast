@@ -8,8 +8,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// DB singleton instance
 var DB *mongo.Database
 
+// InitApp initializes an app
 func InitApp() {
 	db, er := driver.GetConnection(config.MongoURI)
 	if er == nil {

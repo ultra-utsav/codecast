@@ -21,5 +21,6 @@ func InitApp() {
 	}
 
 	DB = db
+
 	log.Println("app initialization completed..")
 }

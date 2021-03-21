@@ -4,14 +4,30 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/codepod/app"
+	user3 "github.com/codepod/delivery/user"
+	"github.com/codepod/driver"
+	user2 "github.com/codepod/services/user"
+	"github.com/codepod/stores/user"
+
 	"github.com/gorilla/mux"
 )
 
 func main() {
-	app.InitApp()
+	db, er := driver.GetConnection(driver.MySQLConfig{Host: "localhost", User: "root", Password: "", Port: "3306"})
+	if er != nil {
+		log.Fatal(er)
+	}
 
-	r := mux.NewRouter()
+	userStore := user.New(db)
+	userService := user2.New(userStore)
+	userHTTP := user3.New(userService)
 
-	log.Fatal(http.ListenAndServe(":8000", r))
+	router := mux.NewRouter()
+
+	router.HandleFunc("/user", userHTTP.Create).Methods(http.MethodPost)
+	router.HandleFunc("/user", userHTTP.Find).Methods(http.MethodGet).Queries("filter", "{filter}")
+	router.HandleFunc("/user/{id}", userHTTP.Delete).Methods(http.MethodDelete)
+	router.HandleFunc("/user/{id}", userHTTP.Update).Methods(http.MethodPut)
+
+	log.Fatal(http.ListenAndServe(":8000", router))
 }

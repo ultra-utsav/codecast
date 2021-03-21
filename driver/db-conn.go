@@ -1,36 +1,31 @@
 package driver
 
 import (
-	"context"
-	"time"
-
-	"github.com/codepod/config"
-
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"database/sql"
+	"fmt"
 )
 
-// GetConnection connects to mongo client and returns database connection
-func GetConnection(uri string) (*mongo.Database, error) {
-	clientOptions := options.Client().ApplyURI(uri)
+type MySQLConfig struct {
+	Host     string
+	User     string
+	Password string
+	Port     string
+	DB       string
+}
 
-	clientOptions.SetAppName(config.App)
-	clientOptions.SetConnectTimeout(5 * time.Minute)
+// GetConnection returns database connection
+func GetConnection(cfg MySQLConfig) (*sql.DB, error) {
+	connString := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DB)
 
-	er := clientOptions.Validate()
+	db, er := sql.Open("mysql", connString)
 	if er != nil {
 		return nil, er
 	}
 
-	client, er := mongo.Connect(context.TODO(), clientOptions)
+	er = db.Ping()
 	if er != nil {
 		return nil, er
 	}
 
-	er = client.Ping(context.TODO(), nil)
-	if er != nil {
-		return nil, er
-	}
-
-	return client.Database(config.App), nil
+	return db, nil
 }

@@ -1,24 +1,18 @@
 package filters
 
-import (
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
-
 type User struct {
-	Name  string
 	Email string
+	ID    string
 }
 
-func (u User) GenFilter() primitive.M {
-	f := bson.M{}
-	if u.Name != "" {
-		f["name"] = u.Name
+func (f *User) WhereClause() (string, string) {
+	if f.Email != "" {
+		return "email=?", f.Email
 	}
 
-	if u.Email != "" {
-		f["email"] = u.Email
+	if f.ID != "" {
+		return "id=?", f.ID
 	}
 
-	return f
+	return "", ""
 }

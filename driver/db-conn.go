@@ -14,7 +14,7 @@ type MySQLConfig struct {
 }
 
 // GetConnection returns database connection
-func GetConnection(cfg MySQLConfig) (*sql.DB, error) {
+func GetConnection(cfg *MySQLConfig) (*sql.DB, error) {
 	connString := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DB)
 
 	db, er := sql.Open("mysql", connString)

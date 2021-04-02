@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	db, er := driver.GetConnection(driver.MySQLConfig{Host: "localhost", User: "root", Password: "", Port: "3306"})
+	db, er := driver.GetConnection(&driver.MySQLConfig{Host: "localhost", User: "root", Password: "", Port: "3306"})
 	if er != nil {
 		log.Fatal(er)
 	}

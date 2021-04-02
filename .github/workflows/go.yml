@@ -30,13 +30,13 @@ jobs:
   #      - name: Test
   #        run: go test -v ./...
 
-  code_quality:
-    name: Code Qaulity
-    runs-on: ubuntu-latest
-    container: golangci/golangci-lint:v1.31.0
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Lint
-        run: golangci-lint run ./...
+#  code_quality:
+#    name: Code Qaulity
+#    runs-on: ubuntu-latest
+#    container: golangci/golangci-lint:v1.31.0
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Lint
+#        run: golangci-lint run ./...

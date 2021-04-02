@@ -30,6 +30,29 @@ func (u *User) Create(w http.ResponseWriter, req *http.Request) {
 	if er != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = w.Write([]byte("unable to parse request body"))
+
+		return
+	}
+
+	if user.Name == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("name can not be empty"))
+
+		return
+	}
+
+	if user.Email == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("email can not be empty"))
+
+		return
+	}
+
+	if user.Password == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("password can not be empty"))
+
+		return
 	}
 
 	er = u.service.Create(req.Context(), &user)
@@ -46,11 +69,17 @@ func (u *User) Find(w http.ResponseWriter, req *http.Request) {
 	if er != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte("unable to find user"))
+
+		return
 	}
+
+	res.Password = ""
 
 	body, er := json.Marshal(res)
 	if er != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+
+		return
 	}
 
 	_, _ = w.Write(body)
@@ -73,7 +102,7 @@ func (u *User) Update(w http.ResponseWriter, req *http.Request) {
 	er = u.service.Update(req.Context(), &user)
 	if er != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		_, _ = w.Write([]byte(fmt.Sprintf("unable to create user, %v", er.Error())))
+		_, _ = w.Write([]byte(fmt.Sprintf("unable to update user, %v", er.Error())))
 	}
 }
 
@@ -83,6 +112,8 @@ func (u *User) Delete(w http.ResponseWriter, req *http.Request) {
 	er := u.service.DeleteByID(req.Context(), id)
 	if er != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		_, _ = w.Write([]byte("unable to parse request body"))
+		_, _ = w.Write([]byte("unable to delete user"))
+
+		return
 	}
 }

@@ -2,7 +2,10 @@ package user
 
 import (
 	"context"
+	"net/http"
 	"strings"
+
+	error2 "github.com/codepod/error"
 
 	"github.com/codepod/filters"
 
@@ -31,11 +34,27 @@ func (s *Service) Find(ctx context.Context, filter string) (*entities.User, erro
 		f.ID = filter
 	}
 
-	return s.store.Find(ctx, &f)
+	u, er := s.store.Find(ctx, &f)
+	if er != nil {
+		return nil, &error2.PodError{
+			Code: http.StatusInternalServerError,
+			Err:  er.Error(),
+		}
+	}
+
+	return u, nil
 }
 
 func (s *Service) DeleteByID(ctx context.Context, id string) error {
-	return s.store.DeleteByID(ctx, id)
+	er := s.store.DeleteByID(ctx, id)
+	if er != nil {
+		return &error2.PodError{
+			Code: http.StatusInternalServerError,
+			Err:  er.Error(),
+		}
+	}
+
+	return nil
 }
 
 func (s *Service) Update(ctx context.Context, user *entities.User) error {

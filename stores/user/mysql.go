@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"net/http"
 
 	"github.com/codepod/filters"
@@ -34,16 +33,8 @@ func (u *User) Create(ctx context.Context, user *entities.User) error {
 	query := "insert into users values(null,?,?,?)"
 	// TODO: encrypt password
 	_, er = u.db.ExecContext(ctx, query, user.Name, user.Email, user.Password)
-	if er != nil {
-		return &error2.PodError{
-			Code:     http.StatusInternalServerError,
-			Err:      er.Error(),
-			Message:  "unable to insert record",
-			Location: "DB",
-		}
-	}
 
-	return nil
+	return er
 }
 
 func (u *User) Find(ctx context.Context, filter *filters.User) (*entities.User, error) {
@@ -55,15 +46,10 @@ func (u *User) Find(ctx context.Context, filter *filters.User) (*entities.User, 
 
 	er := u.db.QueryRowContext(ctx, query, val).Scan(&user.UserID, &user.Name, &user.Email, &user.Password)
 	if er != nil {
-		return nil, &error2.PodError{
-			Code:     http.StatusInternalServerError,
-			Err:      er.Error(),
-			Message:  "unable to find record with given data",
-			Location: "DB",
-		}
+		return nil, er
 	}
 
-	return &user, nil
+	return &user, er
 }
 
 func (u *User) Update(ctx context.Context, user *entities.User) error {
@@ -75,31 +61,18 @@ func (u *User) Update(ctx context.Context, user *entities.User) error {
 		query += q
 	}
 
-	_, er := u.db.ExecContext(ctx, user.UserID, query, values)
-	if er != nil {
-		return &error2.PodError{
-			Code:     http.StatusInternalServerError,
-			Err:      er.Error(),
-			Message:  fmt.Sprintf("unable to update user details for userID: %v", user.UserID),
-			Location: "DB",
-		}
-	}
+	query += " where id=?"
+	values = append(values, user.UserID)
 
-	return nil
+	_, er := u.db.ExecContext(ctx, query, values...)
+
+	return er
 }
 
 func (u *User) DeleteByID(ctx context.Context, id string) error {
-	query := "delete form users where id=?"
+	query := "delete from users where id=?"
 
 	_, er := u.db.ExecContext(ctx, query, id)
-	if er != nil {
-		return &error2.PodError{
-			Code:     http.StatusInternalServerError,
-			Err:      er.Error(),
-			Message:  fmt.Sprintf("unable to delete record with given id: %v", id),
-			Location: "DB",
-		}
-	}
 
-	return nil
+	return er
 }

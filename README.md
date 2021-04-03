@@ -9,7 +9,7 @@ User can download the podcast and follow any to get update notifications.
 
 ## Tech-Stack
 `Golang`
-`MongoDB`
+`MySQL`
 
 ## Contributors
 
